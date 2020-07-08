@@ -3,8 +3,11 @@ name = "tenspec"
 version = "0.1.0"
 authors = ["Tokarev Artyom <tokarev28.art@gmail.com>"]
 edition = "2018"
+# description = "Polycrystalline tensile specimen generation and meshing software."
+# license = "MIT"
 
 [dependencies]
 geoconv = { git = "https://github.com/tokarevart/geoconv" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+clap = {version = "~2.27.0", features = ["yaml"]}

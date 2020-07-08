@@ -2,6 +2,13 @@ use geoconv::*;
 use std::fs;
 use std::process::{Command, Stdio};
 use serde::{Deserialize, Serialize};
+// use clap::{Arg, App, SubCommand};
+use clap::App;
+
+const CACHE_DIR: &str = "tenspec-cache";
+fn rel_cache(filename: &str) -> String {
+    format!("{}/{}", CACHE_DIR, filename)
+}
 
 mod generic_tess {
     use super::*;
@@ -91,22 +98,23 @@ mod generic_tess {
                     args.extend_from_slice(&[x.to_owned(), v.to_owned()]);
                 }
             };
-            ext_args("-n".into(), &Some(self.n.clone()));
-            ext_args("-domain".into(), &self.domain);
-            ext_args("-morpho".into(), &self.morpho);
-            ext_args("-morphooptiini".into(), &self.morphooptiini);
-            ext_args("-reg".into(), &self.reg);
-            ext_args("-fmax".into(), &self.fmax);
-            ext_args("-sel".into(), &self.sel);
-            ext_args("-mloop".into(), &self.mloop);
-            ext_args("-o".into(), &self.output);
-            ext_args("-format".into(), &self.format);
-            Command::new("neper").args(["--rcfile", "none"].iter())
-                                    .args(args)
-                                    .stdout(Stdio::inherit())
-                                    .stderr(Stdio::inherit())
-                                    .output()
-                                    .unwrap();
+            ext_args("-n", &Some(self.n.clone()));
+            ext_args("-domain", &self.domain);
+            ext_args("-morpho", &self.morpho);
+            ext_args("-morphooptiini", &self.morphooptiini);
+            ext_args("-reg", &self.reg);
+            ext_args("-fmax", &self.fmax);
+            ext_args("-sel", &self.sel);
+            ext_args("-mloop", &self.mloop);
+            ext_args("-o", &self.output);
+            ext_args("-format", &self.format);
+            Command::new("neper")
+                    .args(["--rcfile", "none"].iter())
+                    .args(args)
+                    .stdout(Stdio::inherit())
+                    .stderr(Stdio::inherit())
+                    .output()
+                    .unwrap();
         }
     }
 }
@@ -131,10 +139,10 @@ impl Tess {
             2.0 * halfx, 2.0 * halfy, 2.0 * halfz,
             -halfx, -halfy, -halfz,
         );
-        tess.morpho("graingrowth".into())
+        tess.morpho("graingrowth")
             .domain(&domain)
-            .output("tenspec-data/tenspec-tess".into())
-            .format("tess".into());
+            .output(&rel_cache("tenspec-tess"))
+            .format("tess");
         Self{ tess, dims, n }
     }
 
@@ -159,11 +167,11 @@ impl Reg {
             2.0 * halfx, 2.0 * halfy, 2.0 * halfz,
             -halfx, -halfy, -halfz,
         );
-        tess.reg("1".into())
-            .morphooptiini("coo:file(tenspec-data/tenspec-tess.tess)".into())
+        tess.reg("1")
+            .morphooptiini(&format!("coo:file({})", rel_cache("tenspec-tess.tess")))
             .domain(&domain)
-            .output("tenspec-data/tenspec-tess-reg".into())
-            .format("geo".into());
+            .output(&rel_cache("tenspec-tess-reg"))
+            .format("geo");
         Self(tess)
     }
 
@@ -188,14 +196,14 @@ impl Reg {
     }
 
     fn convert_geo() {
-        let file = GeoFile::open("tenspec-data/tenspec-tess-reg.geo").unwrap();
+        let file = GeoFile::open(&rel_cache("tenspec-tess-reg.geo")).unwrap();
         let mut geom = Geometry::from(file);
         geom.clear(GeoElemKind::PhysicalSurface);
         let stags: Vec<u64> = geom.tags(GeoElemKind::Surface).map(|x| *x).collect();
         for stag in stags {
             geom.correct_surface_flatness(stag).unwrap();
         }
-        let mut file = OccFile::create("tenspec-data/tenspec.geo").unwrap();
+        let mut file = OccFile::create(&rel_cache("tenspec.geo")).unwrap();
         file.write_geometry(&geom).unwrap();
     }
 }
@@ -225,9 +233,10 @@ impl Mesh {
     }
 
     pub fn run(&self) {
-        fs::create_dir_all("tenspec-data").unwrap();
-        fs::write("tenspec-data/script.geo", &self.script).unwrap();
-        let args = vec!["tenspec-data/script.geo", "-"];
+        fs::create_dir_all(CACHE_DIR).unwrap();
+        fs::write(&rel_cache("script.geo"), &self.script).unwrap();
+        let script_path = rel_cache("script.geo");
+        let args: Vec<&str> = vec![&script_path, "-"];
         Command::new("gmsh").args(args)
                             .stdout(Stdio::inherit())
                             .stderr(Stdio::inherit())
@@ -255,47 +264,99 @@ pub struct Config {
 impl Config {
     pub fn serialize_to_file(&self) {
         let ser = serde_json::to_string(self).unwrap();
-        fs::create_dir_all("tenspec-data").unwrap();
-        fs::write("tenspec-data/config.json", ser).unwrap();
+        fs::create_dir_all(CACHE_DIR).unwrap();
+        fs::write(&rel_cache("config.json"), ser).unwrap();
     }
 
     pub fn deserialize_from_file() -> Self {
-        let de = fs::read_to_string("tenspec-data/config.json").unwrap();
+        let de = fs::read_to_string(&rel_cache("config.json")).unwrap();
         serde_json::from_str(&de).unwrap()
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+fn main() {
+    // let matches = 
+    //     App::new("tenspec")
+    //             .author("Tokarev Artyom <tokarev28.art@gmail.com>")
+    //             .about("Polycrystalline tensile specimen generation and meshing software")
+    //             .subcommand(SubCommand::with_name("tess")
+    //                         .about("Generates granular part of the specimen as tessellation")
+    //                         .arg(Arg::with_name("n")
+    //                             .required(true)
+    //                             .takes_value(true)
+    //                             .short("n")
+    //                             .help("Number of grains in granular part of the specimen"))
+    //                         .arg(Arg::with_name("dims")
+    //                             .required(true)
+    //                             .takes_value(true)
+    //                             .number_of_values(6)
+    //                             .long("dims")
+    //                             .help("Specimen dimensions in the order l1 l2 le r1 r2 r3")))
+    //             .subcommand(SubCommand::with_name("reg")
+    //                         .about("Regularizes a tessellation, that is, removes the small edges and, indirectly, the small faces")
+    //                         .arg(Arg::with_name("fmax")
+    //                             .takes_value(true)
+    //                             .long("fmax")
+    //                             .help("Maximum allowed face flatness fault (in degrees)"))
+    //                         .arg(Arg::with_name("sel")
+    //                             .takes_value(true)
+    //                             .long("sel")
+    //                             .help("Absolute small edge (maximum) length"))
+    //                         .arg(Arg::with_name("mloop")
+    //                             .takes_value(true)
+    //                             .long("mloop")
+    //                             .help("Maximum number of regularization loops")))
+    //             .subcommand(SubCommand::with_name("mesh")
+    //                         .about("Meshes regularized tessellation")
+    //                         .arg(Arg::with_name("cl")
+    //                             .required(true)
+    //                             .takes_value(true)
+    //                             .long("cl")
+    //                             .help("Absolute characteristic length of the elements"))
+    //                         .arg(Arg::with_name("output")
+    //                             .required(true)
+    //                             .takes_value(true)
+    //                             .short("o")
+    //                             .long("output")
+    //                             .help("Output file name")))
+    //             .get_matches();
 
-    #[test]
-    fn tess() {
-        let dims = SpecDims{
-            l1: 25.0, 
-            l2: 8.0, 
-            le: 1.0,
-            r1: 6.0, 
-            r2: 2.0, 
-            r3: 6.0,
+    let yml = clap::load_yaml!("cli.yml");
+    let matches = App::from_yaml(yml).get_matches();
+    
+    if let Some(matches) = matches.subcommand_matches("tess") {
+        let n = matches.value_of("n").unwrap().to_owned();
+        let dims: Vec<f64> = matches.values_of("dims").unwrap()
+                                    .map(|x| x.parse().unwrap())
+                                    .collect();
+        let dims = SpecDims{ 
+            l1: dims[0], 
+            l2: dims[1], 
+            le: dims[2], 
+            r1: dims[3], 
+            r2: dims[4], 
+            r3: dims[5], 
         };
-        let n = 20.to_string();
         Tess::new(Config{ dims, n }).run();
     }
 
-    #[test]
-    fn reg() {
-        Reg::new()
-            .fmax("20")
-            .sel("3")
-            .mloop("5")
-            .run();
+    if let Some(matches) = matches.subcommand_matches("reg") {
+        let mut reg = Reg::new();
+        if let Some(v) = matches.value_of("fmax") {
+            reg.fmax(v);
+        }
+        if let Some(v) = matches.value_of("sel") {
+            reg.sel(v);
+        }
+        if let Some(v) = matches.value_of("mloop") {
+            reg.mloop(v);
+        }
+        reg.run();
     }
 
-    #[test]
-    fn mesh() {
-        let cl = 3.0.to_string();
-        let output = "tenspec.msh";
-        Mesh::new(&cl, output).run();
+    if let Some(matches) = matches.subcommand_matches("mesh") {
+        let cl = matches.value_of("cl").unwrap();
+        let output = matches.value_of("output").unwrap();
+        Mesh::new(cl, output).run();
     }
 }

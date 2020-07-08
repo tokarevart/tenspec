@@ -1,0 +1,56 @@
+name: tenspec
+author: Tokarev Artyom <tokarev28.art@gmail.com>
+about: Polycrystalline tensile specimen generation and meshing software
+after_help: > 
+    First use tess module to generate initial tesselation,
+    then use reg module to regularize that tesselation
+    and only then mesh regularized tesselation with mesh module.
+    
+    Every time you use a module its last result is cached
+    in ./tenspec-cache directory, so, for example, you don't need
+    to re-generate and regularize tesselation to create a mesh with
+    different characteristic length.
+subcommands:
+    - tess:
+        about: Generates granular part of the specimen as tessellation
+        args:
+            - n:
+                short: n
+                required: true
+                takes_value: true
+                help: Number of grains in granular part of the specimen
+            - dims:
+                long: dims
+                required: true
+                takes_value: true
+                number_of_values: 6
+                help: Specimen dimensions in the order l1 l2 le r1 r2 r3
+    - reg:
+        about: Regularizes a tessellation, that is, removes the small edges and, indirectly, the small faces
+        args:
+            - fmax:
+                long: fmax
+                takes_value: true
+                help: Maximum allowed face flatness fault (in degrees)
+            - sel:
+                long: sel
+                takes_value: true
+                help: Absolute small edge (maximum) length
+            - mloop:
+                long: mloop
+                takes_value: true
+                help: Maximum number of regularization loops
+    - mesh:
+        about: Meshes regularized tessellation
+        args:
+            - cl:
+                long: cl
+                required: true
+                takes_value: true
+                help: Absolute characteristic length of the elements
+            - output:
+                short: o
+                long: output
+                required: true
+                takes_value: true
+                help: Output file name
