@@ -275,52 +275,6 @@ impl Config {
 }
 
 fn main() {
-    // let matches = 
-    //     App::new("tenspec")
-    //             .author("Tokarev Artyom <tokarev28.art@gmail.com>")
-    //             .about("Polycrystalline tensile specimen generation and meshing software")
-    //             .subcommand(SubCommand::with_name("tess")
-    //                         .about("Generates granular part of the specimen as tessellation")
-    //                         .arg(Arg::with_name("n")
-    //                             .required(true)
-    //                             .takes_value(true)
-    //                             .short("n")
-    //                             .help("Number of grains in granular part of the specimen"))
-    //                         .arg(Arg::with_name("dims")
-    //                             .required(true)
-    //                             .takes_value(true)
-    //                             .number_of_values(6)
-    //                             .long("dims")
-    //                             .help("Specimen dimensions in the order l1 l2 le r1 r2 r3")))
-    //             .subcommand(SubCommand::with_name("reg")
-    //                         .about("Regularizes a tessellation, that is, removes the small edges and, indirectly, the small faces")
-    //                         .arg(Arg::with_name("fmax")
-    //                             .takes_value(true)
-    //                             .long("fmax")
-    //                             .help("Maximum allowed face flatness fault (in degrees)"))
-    //                         .arg(Arg::with_name("sel")
-    //                             .takes_value(true)
-    //                             .long("sel")
-    //                             .help("Absolute small edge (maximum) length"))
-    //                         .arg(Arg::with_name("mloop")
-    //                             .takes_value(true)
-    //                             .long("mloop")
-    //                             .help("Maximum number of regularization loops")))
-    //             .subcommand(SubCommand::with_name("mesh")
-    //                         .about("Meshes regularized tessellation")
-    //                         .arg(Arg::with_name("cl")
-    //                             .required(true)
-    //                             .takes_value(true)
-    //                             .long("cl")
-    //                             .help("Absolute characteristic length of the elements"))
-    //                         .arg(Arg::with_name("output")
-    //                             .required(true)
-    //                             .takes_value(true)
-    //                             .short("o")
-    //                             .long("output")
-    //                             .help("Output file name")))
-    //             .get_matches();
-
     let yml = clap::load_yaml!("cli.yml");
     let matches = App::from_yaml(yml).get_matches();
     
