@@ -1,4 +1,5 @@
 Cargo.lock
 target
-tenspec-data
+tenspec-cache
 *.msh
+cargo-run-example.sh

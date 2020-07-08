@@ -1,4 +1,4 @@
-name: Tenspec
+name: tenspec
 author: Tokarev Artyom <tokarev28.art@gmail.com>
 about: Polycrystalline tensile specimen generation and meshing software
 after_help: > 
@@ -8,8 +8,8 @@ after_help: >
     
     Every time you use a module its last result is cached
     in ./tenspec-cache directory, so, for example, you don't need
-    to re-generate and regularize tesselation to create a mesh with
-    different characteristic length.
+    to generate and regularize tesselation multiple time to create meshes with
+    different characteristic lengths.
 subcommands:
     - tess:
         about: Generates granular part of the specimen as tessellation
