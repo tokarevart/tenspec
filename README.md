@@ -6,7 +6,7 @@ Polycrystalline tensile specimen generation and meshing software.
 
 1. Install [Gmsh](https://gmsh.info/) and [Neper](http://www.neper.info/).
    They must be available at the terminal as the command `gmsh` and `neper` at run time.
-2. Install tenspec with `cargo install https://github.com/tokarevart/tenspec`.
+2. Install tenspec with `cargo install --git https://github.com/tokarevart/tenspec`.
    If you want to install Rust/Cargo, this is probably the easiest way: https://www.rustup.rs.
 
 ### Usage
