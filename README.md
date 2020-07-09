@@ -29,4 +29,4 @@ $ tenspec mesh --cl 1 -o tenspec.msh2
 $ tenspec mesh --cl 0.3 -o tenspec-fine.key
 ```
 
-![](https://github.com/tokarevart/tenspec/images/example.jpg)
+![](/images/example.jpg?raw=true)
