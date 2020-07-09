@@ -275,7 +275,7 @@ impl Config {
 }
 
 fn main() {
-    let yml = clap::load_yaml!("cli.yml");
+    let yml = clap::load_yaml!("../cli.yml");
     let matches = App::from_yaml(yml).get_matches();
     
     if let Some(matches) = matches.subcommand_matches("tess") {
