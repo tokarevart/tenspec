@@ -19,6 +19,10 @@ in `./tenspec-cache` directory, so, for example, you don't need
 to generate and regularize tesselation multiple time to create meshes with
 different characteristic lengths.
 
+### Dimensions
+
+![](/images/dims.jpg?raw=true)
+
 ### Example
 
 ``` sh
