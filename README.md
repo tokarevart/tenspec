@@ -28,7 +28,7 @@ different characteristic lengths.
 ``` sh
 $ tenspec tess -n 20 --dims 25 8 1 6 2 6  
 $ tenspec reg --fmax 20 --sel 3 --mloop 5  
-$ tenspec mesh --cl 3 -o tenspec-rough.msh
+$ tenspec mesh --cl 3 -o tenspec-rough.msh \# shown in the image below
 $ tenspec mesh --cl 1 -o tenspec.msh2
 $ tenspec mesh --cl 0.3 -o tenspec-fine.key
 ```
