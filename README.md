@@ -16,8 +16,8 @@ and only then mesh regularized tesselation with `mesh` module.
 
 Every time you use a module its last result is cached
 in `./tenspec-cache` directory, so, for example, you don't need
-to generate and regularize tesselation multiple time to create meshes with
-different characteristic lengths.
+to generate and regularize tesselation multiple times to create meshes with
+different characteristic length.
 
 ### Dimensions
 
