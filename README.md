@@ -21,6 +21,7 @@ different characteristic length.
 
 ### Dimensions
 
+Set them in `--dims` option in the order l1 l2 le r1 r2 r3
 ![](/images/dims.jpg?raw=true)
 
 ### Example
