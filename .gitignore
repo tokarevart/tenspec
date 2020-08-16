@@ -2,4 +2,5 @@ Cargo.lock
 target
 tenspec-cache
 *.msh
-cargo-run-example.sh
+*.key
+*.sh
