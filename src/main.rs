@@ -2,7 +2,6 @@ use geoconv::*;
 use std::fs;
 use std::process::{Command, Stdio};
 use serde::{Deserialize, Serialize};
-// use clap::{Arg, App, SubCommand};
 use clap::App;
 
 const CACHE_DIR: &str = "tenspec-cache";
