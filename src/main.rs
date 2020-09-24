@@ -167,7 +167,9 @@ impl Reg {
             -halfx, -halfy, -halfz,
         );
         tess.reg("1")
-            .morphooptiini(&format!("coo:file({})", rel_cache("tenspec-tess.tess")))
+            .morphooptiini(&format!("coo:file({}),weight:file({})", 
+                                    rel_cache("tenspec-tess.tess"), 
+                                    rel_cache("tenspec-tess.tess")))
             .domain(&domain)
             .output(&rel_cache("tenspec-tess-reg"))
             .format("geo");
