@@ -314,4 +314,19 @@ fn main() {
         let output = matches.value_of("output").unwrap();
         Mesh::new(cl, output).run();
     }
+
+    if let Some(matches) = matches.subcommand_matches("regmesh") {
+        let mut reg = Reg::new();
+        if let Some(v) = matches.value_of("fmax") {
+            reg.fmax(v);
+        }
+        if let Some(v) = matches.value_of("mloop") {
+            reg.mloop(v);
+        }
+        let cl = matches.value_of("cl").unwrap();
+        reg.sel(cl);
+        reg.run();
+        let output = matches.value_of("output").unwrap();
+        Mesh::new(cl, output).run();
+    }
 }

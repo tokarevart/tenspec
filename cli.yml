@@ -54,3 +54,25 @@ subcommands:
                 required: true
                 takes_value: true
                 help: Output file name
+    - regmesh:
+        about: reg and mesh modules combined, with 'sel' arg equal to 'cl'
+        args:
+            - fmax:
+                long: fmax
+                takes_value: true
+                help: Maximum allowed face flatness fault (in degrees)
+            - mloop:
+                long: mloop
+                takes_value: true
+                help: Maximum number of regularization loops
+            - cl:
+                long: cl
+                required: true
+                takes_value: true
+                help: Absolute characteristic length of the elements
+            - output:
+                short: o
+                long: output
+                required: true
+                takes_value: true
+                help: Output file name
